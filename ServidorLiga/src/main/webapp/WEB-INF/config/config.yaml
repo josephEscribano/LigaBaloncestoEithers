@@ -1,4 +1,9 @@
-ruta: jdbc:mysql://dam2.mysql.iesquevedo.es:3335/joseph_escribano_baloncesto?serverTimeZone=GMT+1&useSSL=false
+ruta: jdbc:mysql://dam2.mysql.iesquevedo.es:3335/joseph_escribano_baloncesto?ServerTimeZone=GMT+2&useSSL=false
 user: root
 password: quevedo2dam
 driver: com.mysql.cj.jdbc.Driver
+host: smtp.gmail.com
+userMail: alumnosdamquevedo@gmail.com
+passwordMail: quevedo2020
+
+

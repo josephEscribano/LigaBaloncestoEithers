@@ -1,6 +1,6 @@
 package quevedo.servidorLiga.config;
 
-import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Singleton;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import org.yaml.snakeyaml.Yaml;
@@ -10,13 +10,16 @@ import java.util.Map;
 
 @Getter
 @Log4j2
-@ApplicationScoped
+@Singleton
 public class Configuration {
 
     private String ruta;
     private String password;
     private String user;
     private String driver;
+    private String host;
+    private String userMail;
+    private String passwordMail;
 
     void cargarConfig(InputStream file){
 
@@ -32,6 +35,10 @@ public class Configuration {
             this.password = m.get(ConstantesConfig.PASSWORD);
             this.user = m.get(ConstantesConfig.USER);
             this.driver = m.get(ConstantesConfig.DRIVER);
+            this.host = m.get(ConstantesConfig.HOST);
+            this.userMail = m.get(ConstantesConfig.USER_MAIL);
+            this.passwordMail = m.get(ConstantesConfig.PASSWORD_MAIL);
+
 
         }catch (Exception e){
             log.error(e.getMessage(),e);
