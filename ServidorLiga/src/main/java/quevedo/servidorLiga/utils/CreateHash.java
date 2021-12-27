@@ -16,10 +16,10 @@ public class CreateHash {
 
     public Map<String, String> parametros(){
         Map<String, String> parameters = new HashMap<>();
-        parameters.put("Pbkdf2PasswordHash.Iterations", "3072");
-        parameters.put("Pbkdf2PasswordHash.Algorithm", "PBKDF2WithHmacSHA512");
-        parameters.put("Pbkdf2PasswordHash.SaltSizeBytes", "32");
-        parameters.put("Pbkdf2PasswordHash.KeySizeBytes", "32");
+        parameters.put(ConstantesUtils.ITERATIONSKEY, ConstantesUtils.ITERATIONS_VALUE);
+        parameters.put(ConstantesUtils.ALGORITMO_KEY, ConstantesUtils.ALGORITMO_VALUE);
+        parameters.put(ConstantesUtils.SALT_SIZE_KEY, ConstantesUtils.SALT_VALUE);
+        parameters.put(ConstantesUtils.KEY_SIZE_BYTES_KEY, ConstantesUtils.SALT_VALUE);
 
         return parameters;
     }

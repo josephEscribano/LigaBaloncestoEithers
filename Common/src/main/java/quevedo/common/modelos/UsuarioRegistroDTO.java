@@ -11,7 +11,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class UsuarioRegistroDTO {
-
     private String userName;
     private String correo;
     private String pass;

@@ -8,5 +8,7 @@ module ServidorLiga {
     requires java.sql;
     requires spring.jdbc;
     requires java.naming;
+    requires spring.tx;
     requires Common;
+
 }

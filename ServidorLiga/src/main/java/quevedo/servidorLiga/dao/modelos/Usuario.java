@@ -21,6 +21,7 @@ public class Usuario {
     private boolean confirmacion;
     private LocalDateTime fechaLimite;
     private String idTipoUsuario;
+    private String codCambio;
 
     public Usuario(String userName, String correo, String pass, String codActivacion, boolean confirmacion, LocalDateTime fechaLimite, String idTipoUsuario) {
         this.userName = userName;
@@ -30,5 +31,14 @@ public class Usuario {
         this.confirmacion = confirmacion;
         this.fechaLimite = fechaLimite;
         this.idTipoUsuario = idTipoUsuario;
+    }
+
+    public Usuario(String idUsuario, String userName, String correo, LocalDateTime fechaLimite, String idTipoUsuario, String codCambio) {
+        this.idUsuario = idUsuario;
+        this.userName = userName;
+        this.correo = correo;
+        this.fechaLimite = fechaLimite;
+        this.idTipoUsuario = idTipoUsuario;
+        this.codCambio = codCambio;
     }
 }
