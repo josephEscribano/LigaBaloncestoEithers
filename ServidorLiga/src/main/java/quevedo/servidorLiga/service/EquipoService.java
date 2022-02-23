@@ -21,15 +21,15 @@ public class EquipoService {
         return daoEquipos.getAll();
     }
 
-    public Either<ApiError,Equipo> saveEquipo(Equipo equipo){
-        return daoEquipos.saveEquipo(equipo);
+    public Either<ApiError, Equipo> saveEquipo(String nombre) {
+        return daoEquipos.saveEquipo(nombre);
     }
 
-    public Either<ApiError,Equipo> updateEquipo(Equipo equipo){
+    public Either<ApiError, Equipo> updateEquipo(Equipo equipo) {
         return daoEquipos.updateEquipo(equipo);
     }
 
-    public Either<String, String> deleteEquipo(String id){
+    public Either<ApiError, String> deleteEquipo(String id) {
         return daoEquipos.deleteEquipo(id);
     }
 }

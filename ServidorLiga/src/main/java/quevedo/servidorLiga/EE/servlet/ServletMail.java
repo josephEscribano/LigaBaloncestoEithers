@@ -31,13 +31,14 @@ public class ServletMail extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        //llamo a este servlet cuando el usuario ha excedido el tiempo para confirmar su correo
+        //este servlet se llama desde el tiempoExcedido.jsp
         String codigo = request.getParameter(ConstantesRest.ACTIVACION_CODIGO);
         try {
             Either<String, Integer> resultado = usuarioService.changeDate(LocalDateTime.now(ZoneId.of(ConstantesRest.ZONA_HORARIA)).plusMinutes(1), codigo);
             if (resultado.isRight()) {
                 if (resultado.get() > 0) {
-                    String correo = usuarioService.getCorreo(codigo);
-                    mandarMail.generateAndSendEmail(correo, "<html>Haz click en el siguiente enlace para confirmar el correo: <a href=\"http://localhost:8080/ServidorLiga-1.0-SNAPSHOT/activacion?codigo=" + codigo + "\" >Activacion</a></html>"
+                    mandarMail.generateAndSendEmail(usuarioService.getCorreo(codigo), "<html>Haz click en el siguiente enlace para confirmar el correo: <a href=\"http://localhost:8080/ServidorLiga-1.0-SNAPSHOT/activacion?codigo=" + codigo + "\" >Activacion</a></html>"
                             , ConstantesRest.ASUNTO_REGISTRO);
                     request.getRequestDispatcher(ConstantesRest.EMAIL_ENVIADO_HTML).forward(request, response);
                 } else {

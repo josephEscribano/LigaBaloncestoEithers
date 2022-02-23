@@ -20,7 +20,6 @@ import quevedo.servidorLiga.dao.utils.Querys;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.time.LocalDate;
 import java.util.List;
 
 @Log4j2
@@ -35,19 +34,19 @@ public class DAOEquipos {
 
     public Either<ApiError, List<Equipo>> getAll() {
         Either<ApiError, List<Equipo>> resultado;
-        try{
+        try {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(dbConnectionPool.getHikariDataSource());
             resultado = Either.right(jdbcTemplate.query(Querys.SELECT_FROM_EQUIPOS, BeanPropertyRowMapper.newInstance(Equipo.class)));
-        }catch (CannotGetJdbcConnectionException e){
+        } catch (CannotGetJdbcConnectionException e) {
             log.error(e.getMessage(), e);
-            resultado = Either.left(new ApiError(ConstantesDao.ERROR_CONEXION, LocalDate.now()));
+            resultado = Either.left(new ApiError(ConstantesDao.ERROR_CONEXION));
         }
 
         return resultado;
 
     }
 
-    public Either<ApiError, Equipo> saveEquipo(Equipo equipo) {
+    public Either<ApiError, Equipo> saveEquipo(String nombre) {
         Either<ApiError, Equipo> resultado;
         try {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(dbConnectionPool.getHikariDataSource());
@@ -56,19 +55,21 @@ public class DAOEquipos {
             KeyHolder keyHolder = new GeneratedKeyHolder();
             jdbcTemplate.update(con -> {
                 PreparedStatement preparedStatement = con
-                        .prepareStatement(Querys.INSER_EQUIPO,
+                        .prepareStatement(Querys.INSERT_EQUIPO,
                                 Statement.RETURN_GENERATED_KEYS);
-                preparedStatement.setString(1,equipo.getIdEquipo());
-                preparedStatement.setString(2,equipo.getNombreEquipo());
+
+                preparedStatement.setString(1, nombre);
                 return preparedStatement;
             }, keyHolder);
 
+            Equipo equipo = new Equipo();
             equipo.setIdEquipo(keyHolder.getKey().toString());
+            equipo.setNombreEquipo(nombre);
 
             resultado = Either.right(equipo);
         } catch (CannotGetJdbcConnectionException e) {
             log.error(e.getMessage(), e);
-            resultado = Either.left(new ApiError(ConstantesDao.ERROR_CONEXION, LocalDate.now()));
+            resultado = Either.left(new ApiError(ConstantesDao.ERROR_CONEXION));
         }
 
 
@@ -88,11 +89,11 @@ public class DAOEquipos {
                 Equipo equipoDB = jdbcTemplate.queryForObject(Querys.SELECT_EQUIPO_POR_ID, BeanPropertyRowMapper.newInstance(Equipo.class), equipo.getIdEquipo());
                 resultado = Either.right(equipoDB);
             } else {
-                resultado = Either.left(new ApiError(ConstantesDao.EQUIPO_NO_ENCONTRADO, LocalDate.now()));
+                resultado = Either.left(new ApiError(ConstantesDao.EQUIPO_NO_ENCONTRADO));
             }
         } catch (CannotGetJdbcConnectionException e) {
             log.error(e.getMessage(), e);
-            resultado = Either.left(new ApiError(ConstantesDao.ERROR_CONEXION, LocalDate.now()));
+            resultado = Either.left(new ApiError(ConstantesDao.ERROR_CONEXION));
         }
 
 
@@ -100,27 +101,27 @@ public class DAOEquipos {
 
     }
 
-    public Either<String, String> deleteEquipo(String id) {
+    public Either<ApiError, String> deleteEquipo(String id) {
 
-        Either<String, String> resultado;
+        Either<ApiError, String> resultado;
         TransactionDefinition txDef = new DefaultTransactionDefinition();
         DataSourceTransactionManager transactionManager = new DataSourceTransactionManager(dbConnectionPool.getHikariDataSource());
         TransactionStatus txStatus = transactionManager.getTransaction(txDef);
         try {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(dbConnectionPool.getHikariDataSource());
-            jdbcTemplate.update(Querys.DELETE_PARTIDO_POR_EQUIPO,id,id);
+            jdbcTemplate.update(Querys.DELETE_PARTIDO_POR_EQUIPO, id, id);
             int actualizado = jdbcTemplate.update(Querys.DELETE_EQUIPO, id);
 
             if (actualizado > 0) {
                 resultado = Either.right(id);
             } else {
-                resultado = Either.left(ConstantesDao.DELETE_FAIL_EQUIPO);
+                resultado = Either.left(new ApiError(ConstantesDao.DELETE_FAIL_EQUIPO));
             }
             transactionManager.commit(txStatus);
         } catch (CannotGetJdbcConnectionException e) {
             transactionManager.rollback(txStatus);
             log.error(e.getMessage(), e);
-            resultado = Either.left(ConstantesDao.ERROR_CONEXION);
+            resultado = Either.left(new ApiError(ConstantesDao.ERROR_CONEXION));
         }
 
 

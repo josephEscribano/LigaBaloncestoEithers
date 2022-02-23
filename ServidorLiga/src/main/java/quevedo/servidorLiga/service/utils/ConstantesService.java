@@ -11,4 +11,5 @@ public class ConstantesService {
     public static final String PROPERTIE_VALUE_SSL = "smtp.gmail.com";
     public static final String MAIL_SMTP_STARTTLS_ENABLE = "mail.smtp.starttls.enable";
     public static final String SMTP = "smtp";
+    public static final String AVISO_SEGURIDAD_REGISTRO = "El usuario insertado es un admin, no tienes los permisos necesarios";
 }

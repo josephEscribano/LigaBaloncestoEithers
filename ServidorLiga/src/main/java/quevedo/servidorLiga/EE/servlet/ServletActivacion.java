@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
 import quevedo.servidorLiga.EE.utils.ConstantesRest;
-import quevedo.servidorLiga.service.MandarMail;
 import quevedo.servidorLiga.service.UsuarioService;
 
 import java.io.IOException;
@@ -23,7 +22,7 @@ public class ServletActivacion extends HttpServlet {
 
 
     @Inject
-    public ServletActivacion(UsuarioService usuarioService, MandarMail mandarMail) {
+    public ServletActivacion(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
     }
 

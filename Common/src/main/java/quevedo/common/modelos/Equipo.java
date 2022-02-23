@@ -12,4 +12,10 @@ import lombok.Setter;
 public class Equipo {
     private String idEquipo;
     private String nombreEquipo;
+
+    @Override
+    public String toString() {
+        return "idEquipo='" + idEquipo + '\'' +
+                ", nombreEquipo='" + nombreEquipo;
+    }
 }

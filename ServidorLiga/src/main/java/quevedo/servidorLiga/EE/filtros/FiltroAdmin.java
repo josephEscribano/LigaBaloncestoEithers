@@ -10,21 +10,24 @@ import jakarta.ws.rs.ext.Provider;
 import quevedo.common.errores.ApiError;
 import quevedo.servidorLiga.EE.filtros.anotaciones.Admin;
 import quevedo.servidorLiga.EE.utils.ConstantesRest;
+import quevedo.servidorLiga.dao.modelos.Usuario;
 
 import java.io.IOException;
-import java.time.LocalDate;
 
 @Provider
 @Admin
-public class FiltroTipoUsuario implements ContainerRequestFilter {
+public class FiltroAdmin implements ContainerRequestFilter {
 
     @Context
     private HttpServletRequest httpServletRequest;
+
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
-        if (!httpServletRequest.getSession().getAttribute(ConstantesRest.PARAMETER_TIPO).equals(ConstantesRest.UNO)){
+
+        Usuario usuario = (Usuario) httpServletRequest.getSession().getAttribute(ConstantesRest.QUERY_PARAM_USER);
+        if (usuario == null || !usuario.getIdTipoUsuario().equals(ConstantesRest.DOS)) {
             requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED)
-                    .entity(new ApiError(ConstantesRest.MENSAJE_SOLOADMIN, LocalDate.now()))
+                    .entity(new ApiError(ConstantesRest.MENSAJE_SOLOADMIN))
                     .type(MediaType.APPLICATION_JSON_TYPE).build());
         }
 

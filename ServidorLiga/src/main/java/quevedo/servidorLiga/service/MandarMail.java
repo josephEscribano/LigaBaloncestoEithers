@@ -27,7 +27,6 @@ public class MandarMail {
         Session getMailSession;
         MimeMessage generateMailMessage;
 
-        // Step1
 
         mailServerProperties = System.getProperties();
         mailServerProperties.put(ConstantesService.PROPERTIES_MAIL_SMTP_PORT, Integer.parseInt(ConstantesService.PROPERTIES_PUERTO));
@@ -35,7 +34,6 @@ public class MandarMail {
         mailServerProperties.put(ConstantesService.PROPERTIE_SSL, ConstantesService.PROPERTIE_VALUE_SSL);
         mailServerProperties.put(ConstantesService.MAIL_SMTP_STARTTLS_ENABLE, ConstantesService.PROPERTIE_VALUE);
 
-        // Step2
 
         getMailSession = Session.getDefaultInstance(mailServerProperties, null);
         generateMailMessage = new MimeMessage(getMailSession);
@@ -45,12 +43,7 @@ public class MandarMail {
         generateMailMessage.setContent(emailBody, ConstantesService.TEXT_HTML);
 
 
-        // Step3
-
         Transport transport = getMailSession.getTransport(ConstantesService.SMTP);
-
-        // Enter your correct gmail UserID and Password
-        // if you have 2FA enabled then provide App Specific Password
         transport.connect(configuration.getHost(),
                 configuration.getUserMail(),
                 configuration.getPasswordMail());

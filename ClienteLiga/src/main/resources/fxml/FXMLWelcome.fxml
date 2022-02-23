@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane fx:id="fxWelcomePane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="quevedo.ClienteLiga.gui.controllers.FXMLWelcomeController">
+    <children>
+        <Label fx:id="fxWelcomeTitle" layoutX="184.0" layoutY="116.0" text="Bienvenid@" textFill="#000000a1">
+            <font>
+                <Font size="36.0" />
+            </font>
+        </Label>
+        <Label layoutX="148.0" layoutY="169.0" text="Por favor, selecciona una opcion del menu">
+            <font>
+                <Font size="14.0" />
+            </font></Label>
+    </children>
+</AnchorPane>

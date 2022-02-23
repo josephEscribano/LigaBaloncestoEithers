@@ -10,20 +10,22 @@ import jakarta.ws.rs.ext.Provider;
 import quevedo.common.errores.ApiError;
 import quevedo.servidorLiga.EE.filtros.anotaciones.Login;
 import quevedo.servidorLiga.EE.utils.ConstantesRest;
+import quevedo.servidorLiga.dao.modelos.Usuario;
 
 import java.io.IOException;
-import java.time.LocalDate;
 
 @Provider
 @Login
 public class FiltroLogin implements ContainerRequestFilter {
     @Context
     private HttpServletRequest httpServletRequest;
+
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
-        if (httpServletRequest.getSession().getAttribute(ConstantesRest.PARAMETER_USERNAME) == null){
+        Usuario usuario = (Usuario) httpServletRequest.getSession().getAttribute(ConstantesRest.QUERY_PARAM_USER);
+        if (usuario == null) {
             requestContext.abortWith(Response.status(Response.Status.FORBIDDEN)
-                    .entity(new ApiError(ConstantesRest.NO_LOGUEADO, LocalDate.now()))
+                    .entity(new ApiError(ConstantesRest.NO_LOGUEADO))
                     .type(MediaType.APPLICATION_JSON_TYPE).build());
         }
 

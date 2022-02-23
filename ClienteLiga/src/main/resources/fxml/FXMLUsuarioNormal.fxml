@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="800.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="quevedo.ClienteLiga.gui.controllers.pantallasAcciones.FXMLUsuariosController">
+    <children>
+
+        <Button layoutX="356.0" layoutY="330.0" onAction="#updateUsuario" mnemonicParsing="false" text="Actualizar" />
+        <TextField fx:id="tfUsername" layoutX="321.0" layoutY="177.0" />
+        <TextField fx:id="tfCorreo" layoutX="321.0" layoutY="258.0" />
+        <Label layoutX="321.0" layoutY="160.0" text="Nombre de Usuario" />
+        <Label layoutX="321.0" layoutY="241.0" text="Correo" />
+        <Button layoutX="331.0" layoutY="375.0" mnemonicParsing="false" onAction="#cambioPass" prefHeight="25.0" prefWidth="128.0" text="Cambiar Contraseña" />
+    </children>
+</AnchorPane>

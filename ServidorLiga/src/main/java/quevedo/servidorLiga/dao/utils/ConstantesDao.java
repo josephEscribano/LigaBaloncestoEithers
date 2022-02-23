@@ -15,4 +15,5 @@ public class ConstantesDao {
     public static final String DELETE_FAIL_EQUIPO = "El equipo no ha podido ser eleminado";
     public static final String DELETE_FAIL_JORNADA = "La jornada no ha podido ser eliminada";
     public static final String DELETE_FAIL_PARTIDO = "El partido no ha podido ser eliminado";
+    public static final String AVISO_CORREO_SIN_CONFIRMAR = "Debes confirmar tu correo para hacer login";
 }

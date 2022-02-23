@@ -7,14 +7,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CreateHash {
-    private Pbkdf2PasswordHash passwordHash;
+    private final Pbkdf2PasswordHash passwordHash;
 
     @Inject
     public CreateHash(Pbkdf2PasswordHash passwordHash) {
         this.passwordHash = passwordHash;
     }
 
-    public Map<String, String> parametros(){
+    public Map<String, String> parametros() {
         Map<String, String> parameters = new HashMap<>();
         parameters.put(ConstantesUtils.ITERATIONSKEY, ConstantesUtils.ITERATIONS_VALUE);
         parameters.put(ConstantesUtils.ALGORITMO_KEY, ConstantesUtils.ALGORITMO_VALUE);
@@ -25,15 +25,15 @@ public class CreateHash {
     }
 
 
-    public String hashearPass(String pass){
+    public String hashearPass(String pass) {
 
         passwordHash.initialize(parametros());
 
         return passwordHash.generate(pass.toCharArray());
     }
 
-    public boolean verificarPass(String passCliente,String pass){
+    public boolean verificarPass(String passCliente, String pass) {
         passwordHash.initialize(parametros());
-        return passwordHash.verify(passCliente.toCharArray(),pass);
+        return passwordHash.verify(passCliente.toCharArray(), pass);
     }
 }

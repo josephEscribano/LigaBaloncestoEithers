@@ -4,8 +4,7 @@ import java.security.SecureRandom;
 import java.util.Base64;
 
 public class Utils {
-    public static String randomCode()
-    {
+    public static String randomCode() {
         SecureRandom sr = new SecureRandom();
         byte[] bits = new byte[32];
         sr.nextBytes(bits);

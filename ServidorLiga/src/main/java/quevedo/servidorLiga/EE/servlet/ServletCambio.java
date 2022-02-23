@@ -7,6 +7,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import quevedo.common.errores.ApiError;
 import quevedo.servidorLiga.EE.utils.ConstantesRest;
 import quevedo.servidorLiga.service.UsuarioService;
 import quevedo.servidorLiga.utils.CreateHash;
@@ -31,7 +32,7 @@ public class ServletCambio extends HttpServlet {
         String pass = createHash.hashearPass(request.getParameter(ConstantesRest.PARAMETER_PASS));
         String codigo = request.getParameter(ConstantesRest.ACTIVACION_CODIGO);
         if (usuarioService.checkTimeCambioPass(LocalDateTime.now(ZoneId.of(ConstantesRest.ZONA_HORARIA)), codigo)) {
-            Either<String, Integer> resultado = usuarioService.changePass(pass, codigo);
+            Either<ApiError, Integer> resultado = usuarioService.changePass(pass, codigo);
             if (resultado.isRight()) {
                 if (resultado.get() > 0) {
                     request.getRequestDispatcher(ConstantesRest.CONTRASEÑA_CAMBIADA_HTML).forward(request, response);

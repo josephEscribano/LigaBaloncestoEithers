@@ -13,7 +13,7 @@
 <body>
     <form action="${pageContext.request.contextPath}/cambio" method="get">
 
-        <input type="text" name = "pass" />
+        <input type="password" name = "pass" />
         <input type="hidden" name="codigo" value="${codigo}">
         <input type="submit" value="Cambiar Contraseña">
     </form>

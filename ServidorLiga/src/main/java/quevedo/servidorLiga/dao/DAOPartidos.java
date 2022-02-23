@@ -16,7 +16,6 @@ import quevedo.servidorLiga.dao.utils.Querys;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.time.LocalDate;
 import java.util.List;
 
 @Log4j2
@@ -39,7 +38,7 @@ public class DAOPartidos {
             resultado = Either.right(jdbcTemplate.query(Querys.SELECT_FROM_PARTIDOS, partidoMapper));
         } catch (CannotGetJdbcConnectionException e) {
             log.error(e.getMessage(), e);
-            resultado = Either.left(new ApiError(ConstantesDao.ERROR_CONEXION, LocalDate.now()));
+            resultado = Either.left(new ApiError(ConstantesDao.ERROR_CONEXION));
         }
 
         return resultado;
@@ -67,7 +66,7 @@ public class DAOPartidos {
             resultado = Either.right(partido);
         } catch (CannotGetJdbcConnectionException e) {
             log.error(e.getMessage(), e);
-            resultado = Either.left(new ApiError(ConstantesDao.ERROR_CONEXION, LocalDate.now()));
+            resultado = Either.left(new ApiError(ConstantesDao.ERROR_CONEXION));
         }
 
 
@@ -82,17 +81,17 @@ public class DAOPartidos {
         try {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(dbConnectionPool.getHikariDataSource());
             int actualizado = jdbcTemplate.update(Querys.UPDATE_PARTIDO, partido.getIdJornada(), partido.getEquipoLocal().getIdEquipo()
-                    , partido.getEquipoVisitante().getIdEquipo(),partido.getResultado(), partido.getIdPartido());
+                    , partido.getEquipoVisitante().getIdEquipo(), partido.getResultado(), partido.getIdPartido());
 
             if (actualizado > 0) {
                 Partido partidoDB = jdbcTemplate.queryForObject(Querys.SELECT_PARTIDO_POR_ID, partidoMapper, partido.getIdPartido());
                 resultado = Either.right(partidoDB);
             } else {
-                resultado = Either.left(new ApiError(ConstantesDao.EQUIPO_NO_ENCONTRADO, LocalDate.now()));
+                resultado = Either.left(new ApiError(ConstantesDao.EQUIPO_NO_ENCONTRADO));
             }
         } catch (CannotGetJdbcConnectionException e) {
             log.error(e.getMessage(), e);
-            resultado = Either.left(new ApiError(ConstantesDao.ERROR_CONEXION, LocalDate.now()));
+            resultado = Either.left(new ApiError(ConstantesDao.ERROR_CONEXION));
         }
 
 
@@ -100,9 +99,9 @@ public class DAOPartidos {
 
     }
 
-    public Either<String, String> deletePartido(String id) {
+    public Either<ApiError, String> deletePartido(String id) {
 
-        Either<String, String> resultado;
+        Either<ApiError, String> resultado;
         try {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(dbConnectionPool.getHikariDataSource());
             int actualizado = jdbcTemplate.update(Querys.DELETE_PARTIDO, id);
@@ -110,27 +109,42 @@ public class DAOPartidos {
             if (actualizado > 0) {
                 resultado = Either.right(id);
             } else {
-                resultado = Either.left(ConstantesDao.DELETE_FAIL_PARTIDO);
+                resultado = Either.left(new ApiError(ConstantesDao.DELETE_FAIL_PARTIDO));
             }
         } catch (CannotGetJdbcConnectionException e) {
             log.error(e.getMessage(), e);
-            resultado = Either.left(ConstantesDao.ERROR_CONEXION);
+            resultado = Either.left(new ApiError(ConstantesDao.ERROR_CONEXION));
         }
 
 
         return resultado;
     }
 
-    public Either<ApiError,List<Partido>> filtrar(String equipo,String jornada){
-        Either<ApiError,List<Partido>> resultado;
+    public Either<ApiError, List<Partido>> filtrarEquipo(String equipo) {
+        Either<ApiError, List<Partido>> resultado;
 
-        try{
+        try {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(dbConnectionPool.getHikariDataSource());
-            resultado = Either.right(jdbcTemplate.query(Querys.FILTROS_PARTIDOS,partidoMapper,equipo,equipo,jornada));
+            resultado = Either.right(jdbcTemplate.query(Querys.FILTRO_EQUIPO, partidoMapper, equipo, equipo));
 
-        }catch (CannotGetJdbcConnectionException e){
+        } catch (CannotGetJdbcConnectionException e) {
             log.error(e.getMessage(), e);
-            resultado = Either.left(new ApiError(ConstantesDao.ERROR_CONEXION, LocalDate.now()));
+            resultado = Either.left(new ApiError(ConstantesDao.ERROR_CONEXION));
+        }
+
+        return resultado;
+    }
+
+    public Either<ApiError, List<Partido>> filtrarJornada(String jornada) {
+        Either<ApiError, List<Partido>> resultado;
+
+        try {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dbConnectionPool.getHikariDataSource());
+            resultado = Either.right(jdbcTemplate.query(Querys.FILTRO_JORNADA, partidoMapper, jornada));
+
+        } catch (CannotGetJdbcConnectionException e) {
+            log.error(e.getMessage(), e);
+            resultado = Either.left(new ApiError(ConstantesDao.ERROR_CONEXION));
         }
 
         return resultado;

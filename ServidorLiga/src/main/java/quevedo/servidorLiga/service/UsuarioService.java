@@ -3,9 +3,11 @@ package quevedo.servidorLiga.service;
 import io.vavr.control.Either;
 import jakarta.inject.Inject;
 import quevedo.common.errores.ApiError;
-import quevedo.common.modelos.UsuarioDTO;
+import quevedo.common.modelos.UsuarioUpdateDTO;
+import quevedo.servidorLiga.EE.utils.ConstantesRest;
 import quevedo.servidorLiga.dao.DAOUsuarios;
 import quevedo.servidorLiga.dao.modelos.Usuario;
+import quevedo.servidorLiga.service.utils.ConstantesService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,6 +26,16 @@ public class UsuarioService {
     }
 
     public Either<ApiError, Usuario> saveUsuario(Usuario usuario) {
+        Either<ApiError, Usuario> resultado;
+        if (!usuario.getIdTipoUsuario().equals(ConstantesRest.DOS)) {
+            resultado = daoUsuarios.saveUsuario(usuario);
+        } else {
+            resultado = Either.left(new ApiError(ConstantesService.AVISO_SEGURIDAD_REGISTRO));
+        }
+        return resultado;
+    }
+
+    public Either<ApiError, Usuario> saveAdmin(Usuario usuario) {
         return daoUsuarios.saveUsuario(usuario);
     }
 
@@ -47,11 +59,11 @@ public class UsuarioService {
         return daoUsuarios.changeDate(fecha, codigo);
     }
 
-    public Either<ApiError, Usuario> updateUsuario(UsuarioDTO usuarioDTO) {
-        return daoUsuarios.updateUsuario(usuarioDTO);
+    public Either<ApiError, Usuario> updateUsuario(UsuarioUpdateDTO usuarioUpdateDTO) {
+        return daoUsuarios.updateUsuario(usuarioUpdateDTO);
     }
 
-    public Either<String, String> deleteUsuario(String id) {
+    public Either<ApiError, String> deleteUsuario(String id) {
         return daoUsuarios.deleteUsuario(id);
     }
 
@@ -59,7 +71,7 @@ public class UsuarioService {
         return daoUsuarios.insertCodCambio(usuario);
     }
 
-    public Either<String, Integer> changePass(String pass, String codigo) {
+    public Either<ApiError, Integer> changePass(String pass, String codigo) {
         return daoUsuarios.changePass(pass, codigo);
     }
 
@@ -73,6 +85,10 @@ public class UsuarioService {
 
     public Either<ApiError, Usuario> doLogin(String user, String pass) {
         return daoUsuarios.doLogin(user, pass);
+    }
+
+    public Either<ApiError, Integer> reenviarCorreo(String user, String codigo, LocalDateTime fecha) {
+        return daoUsuarios.reenviarCorreo(user, codigo, fecha);
     }
 
 

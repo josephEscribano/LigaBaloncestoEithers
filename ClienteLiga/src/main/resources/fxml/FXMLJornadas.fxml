@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="800" prefWidth="800" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="quevedo.ClienteLiga.gui.controllers.pantallasAcciones.FXMLJornadasController">
+   <children>
+      <DatePicker fx:id="dpFecha" layoutX="378.0" layoutY="125.0" />
+      <ListView fx:id="lvJornada" layoutX="49.0" onMousePressed="#showData" layoutY="30.0" prefHeight="313.0" prefWidth="302.0" />
+      <Button layoutX="49.0" layoutY="343.0" mnemonicParsing="false" onAction="#insertJornada" text="Añadir" />
+      <Button layoutX="174.0" layoutY="343.0" mnemonicParsing="false" onAction="#updateJornada" text="Actualizar" />
+      <Button layoutX="300.0" layoutY="343.0" mnemonicParsing="false" onAction="#deleteJornada" text="Borrar" />
+      <Label layoutX="378.0" layoutY="108.0" text="Fecha" />
+
+   </children>
+</AnchorPane>

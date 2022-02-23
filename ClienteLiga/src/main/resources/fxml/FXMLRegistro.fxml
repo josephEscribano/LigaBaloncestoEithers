@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="800.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="quevedo.ClienteLiga.gui.controllers.FXMLRegistroController">
+   <children>
+      <Button layoutX="307.0" layoutY="375.0" mnemonicParsing="false" prefHeight="25.0" onAction="#saveUsuario" prefWidth="200.0" text="Registro" />
+      <TextField fx:id="tfUserName" layoutX="332.0" layoutY="168.0" />
+      <TextField fx:id="tfCorreo" layoutX="332.0" layoutY="227.0" />
+      <PasswordField fx:id="tfPass" layoutX="332.0"  layoutY="303.0" />
+      <Label layoutX="332.0" layoutY="151.0" text="Nombre de Usuario" />
+      <Label layoutX="332.0" layoutY="210.0" text="Correo" />
+      <Label layoutX="332.0" layoutY="286.0" text="Contraseña" />
+   </children>
+</AnchorPane>

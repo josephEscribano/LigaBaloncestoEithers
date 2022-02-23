@@ -20,14 +20,12 @@ import quevedo.servidorLiga.dao.utils.Querys;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.time.LocalDate;
 import java.util.List;
 
 @Log4j2
 public class DAOJornadas {
 
     private final DBConnectionPool dbConnectionPool;
-
 
 
     @Inject
@@ -37,12 +35,12 @@ public class DAOJornadas {
 
     public Either<ApiError, List<Jornada>> getAll() {
         Either<ApiError, List<Jornada>> resultado;
-        try{
+        try {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(dbConnectionPool.getHikariDataSource());
             resultado = Either.right(jdbcTemplate.query(Querys.SELECT_FROM_JORNADAS, BeanPropertyRowMapper.newInstance(Jornada.class)));
-        }catch (CannotGetJdbcConnectionException e){
+        } catch (CannotGetJdbcConnectionException e) {
             log.error(e.getMessage(), e);
-            resultado = Either.left(new ApiError(ConstantesDao.ERROR_CONEXION, LocalDate.now()));
+            resultado = Either.left(new ApiError(ConstantesDao.ERROR_CONEXION));
         }
 
         return resultado;
@@ -60,8 +58,8 @@ public class DAOJornadas {
                 PreparedStatement preparedStatement = con
                         .prepareStatement(Querys.INSERT_JORNADA,
                                 Statement.RETURN_GENERATED_KEYS);
-                preparedStatement.setString(1,jornada.getIdJornada());
-                preparedStatement.setObject(2,jornada.getFechaJornada());
+                preparedStatement.setString(1, jornada.getIdJornada());
+                preparedStatement.setObject(2, jornada.getFechaJornada());
                 return preparedStatement;
             }, keyHolder);
 
@@ -70,7 +68,7 @@ public class DAOJornadas {
             resultado = Either.right(jornada);
         } catch (CannotGetJdbcConnectionException e) {
             log.error(e.getMessage(), e);
-            resultado = Either.left(new ApiError(ConstantesDao.ERROR_CONEXION, LocalDate.now()));
+            resultado = Either.left(new ApiError(ConstantesDao.ERROR_CONEXION));
         }
 
 
@@ -84,17 +82,17 @@ public class DAOJornadas {
         Either<ApiError, Jornada> resultado;
         try {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(dbConnectionPool.getHikariDataSource());
-            int actualizado = jdbcTemplate.update(Querys.UPDATE_JORNADA, jornada.getFechaJornada(),jornada.getIdJornada());
+            int actualizado = jdbcTemplate.update(Querys.UPDATE_JORNADA, jornada.getFechaJornada(), jornada.getIdJornada());
 
             if (actualizado > 0) {
                 Jornada joranadaDB = jdbcTemplate.queryForObject(Querys.SELECT_JORNADA_POR_ID, BeanPropertyRowMapper.newInstance(Jornada.class), jornada.getIdJornada());
                 resultado = Either.right(joranadaDB);
             } else {
-                resultado = Either.left(new ApiError(ConstantesDao.EQUIPO_NO_ENCONTRADO, LocalDate.now()));
+                resultado = Either.left(new ApiError(ConstantesDao.EQUIPO_NO_ENCONTRADO));
             }
         } catch (CannotGetJdbcConnectionException e) {
             log.error(e.getMessage(), e);
-            resultado = Either.left(new ApiError(ConstantesDao.ERROR_CONEXION, LocalDate.now()));
+            resultado = Either.left(new ApiError(ConstantesDao.ERROR_CONEXION));
         }
 
 
@@ -102,28 +100,28 @@ public class DAOJornadas {
 
     }
 
-    public Either<String, String> deleteJornada(String id) {
+    public Either<ApiError, String> deleteJornada(String id) {
 
-        Either<String, String> resultado;
+        Either<ApiError, String> resultado;
         TransactionDefinition txDef = new DefaultTransactionDefinition();
         DataSourceTransactionManager transactionManager = new DataSourceTransactionManager(dbConnectionPool.getHikariDataSource());
         TransactionStatus txStatus = transactionManager.getTransaction(txDef);
         try {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(dbConnectionPool.getHikariDataSource());
-            jdbcTemplate.update(Querys.DELETE_PARTIDO_POR_JORNADA,id);
+            jdbcTemplate.update(Querys.DELETE_PARTIDO_POR_JORNADA, id);
             int actualizado = jdbcTemplate.update(Querys.DELETE_JORNADA, id);
 
             if (actualizado > 0) {
                 resultado = Either.right(id);
             } else {
-                resultado = Either.left(ConstantesDao.DELETE_FAIL_JORNADA);
+                resultado = Either.left(new ApiError(ConstantesDao.DELETE_FAIL_JORNADA));
             }
 
             transactionManager.commit(txStatus);
         } catch (CannotGetJdbcConnectionException e) {
             transactionManager.rollback(txStatus);
             log.error(e.getMessage(), e);
-            resultado = Either.left(ConstantesDao.ERROR_CONEXION);
+            resultado = Either.left(new ApiError(ConstantesDao.ERROR_CONEXION));
         }
 
 

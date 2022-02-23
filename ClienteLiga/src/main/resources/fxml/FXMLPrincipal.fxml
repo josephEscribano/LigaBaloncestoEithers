@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane fx:id="root" xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="quevedo.ClienteLiga.gui.controllers.FXMLPrincipalController"
+            prefHeight="800" prefWidth="800">
+    <top>
+        <MenuBar fx:id="menuApp">
+            <Menu text="Liga">
+                <items>
+                    <MenuItem onAction="#chargeEquipos" text="Equipos"/>
+                    <MenuItem onAction="#chargeJornadas" text="Jornadas"/>
+                    <MenuItem onAction="#chargePartidos" text="Partidos"/>
+                    <MenuItem onAction="#chargeUsuarios" text="Usuarios"/>
+                    <MenuItem onAction="#doLogout" text="Desconectarse"/>
+                </items>
+            </Menu>
+
+            <Menu text="Liga">
+                <items>
+                    <MenuItem onAction="#chargePartidos" text="Partidos"/>
+                    <MenuItem onAction="#chargeUsuarios" text="Usuarios"/>
+                    <MenuItem onAction="#doLogout" text="Desconectarse"/>
+                </items>
+            </Menu>
+
+            <Menu  text="Login">
+                <MenuItem onAction="#chargeLogin" text="Login"/>
+                <MenuItem onAction="#chargeRegistro" text="Registro"/>
+            </Menu>
+        </MenuBar>
+    </top>
+
+</BorderPane>

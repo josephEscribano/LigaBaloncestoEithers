@@ -8,8 +8,9 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.log4j.Log4j2;
 import quevedo.common.errores.ApiError;
-import quevedo.common.modelos.Equipo;
 import quevedo.common.modelos.Jornada;
+import quevedo.servidorLiga.EE.filtros.anotaciones.Admin;
+import quevedo.servidorLiga.EE.filtros.anotaciones.Login;
 import quevedo.servidorLiga.EE.utils.ConstantesRest;
 import quevedo.servidorLiga.service.JornadaService;
 
@@ -19,6 +20,7 @@ import java.util.List;
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes(MediaType.APPLICATION_JSON)
 @Log4j2
+@Login
 public class RestJornadas {
 
     private final JornadaService jornadaService;
@@ -47,6 +49,7 @@ public class RestJornadas {
     }
 
     @POST
+    @Admin
     public Response saveJornada(Jornada jornada) {
         Response response;
         Either<ApiError, Jornada> resultado = jornadaService.saveJornada(jornada);
@@ -64,6 +67,7 @@ public class RestJornadas {
     }
 
     @PUT
+    @Admin
     public Response updateJornada(Jornada jornada) {
         Response response;
         Either<ApiError, Jornada> resultado = jornadaService.updateJornada(jornada);
@@ -81,10 +85,11 @@ public class RestJornadas {
     }
 
     @DELETE
+    @Admin
     @Path(ConstantesRest.PATH_ID)
     public Response deleteJornada(@PathParam(ConstantesRest.PARAM_ID) String id) {
         Response response;
-        Either<String, String> resultado = jornadaService.delteJornada(id);
+        Either<ApiError, String> resultado = jornadaService.delteJornada(id);
         if (resultado.isRight()) {
             response = Response.status(Response.Status.OK)
                     .entity(resultado.get())

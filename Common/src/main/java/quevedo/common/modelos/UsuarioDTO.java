@@ -9,9 +9,17 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class UsuarioDTO{
+public class UsuarioDTO {
     private String idUsuario;
     private String userName;
     private String correo;
     private String idTipoUsuario;
+
+    @Override
+    public String toString() {
+        return "idUsuario='" + idUsuario + '\'' +
+                ", userName='" + userName + '\'' +
+                ", correo='" + correo + '\'' +
+                ", idTipoUsuario='" + idTipoUsuario;
+    }
 }

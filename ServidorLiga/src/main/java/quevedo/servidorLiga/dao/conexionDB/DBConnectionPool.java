@@ -4,7 +4,6 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.annotation.PreDestroy;
 import jakarta.inject.Inject;
-
 import jakarta.inject.Singleton;
 import quevedo.servidorLiga.config.Configuration;
 import quevedo.servidorLiga.dao.utils.ConstantesDao;
@@ -14,12 +13,11 @@ import javax.sql.DataSource;
 @Singleton
 public class DBConnectionPool {
 
-    private DataSource hikariDataSource = null ;
-
-    private Configuration configuration;
+    private final Configuration configuration;
+    private final DataSource hikariDataSource;
 
     @Inject
-    public DBConnectionPool(Configuration configuration){
+    public DBConnectionPool(Configuration configuration) {
         this.configuration = configuration;
         hikariDataSource = getDataSourceHikari();
     }
@@ -45,8 +43,7 @@ public class DBConnectionPool {
     }
 
     @PreDestroy
-    public void closePool()
-    {
-        ((HikariDataSource)hikariDataSource).close();
+    public void closePool() {
+        ((HikariDataSource) hikariDataSource).close();
     }
 }

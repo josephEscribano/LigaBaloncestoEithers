@@ -15,4 +15,14 @@ public class Jornada {
     private String idJornada;
     private LocalDate fechaJornada;
 
+
+    public Jornada(LocalDate fechaJornada) {
+        this.fechaJornada = fechaJornada;
+    }
+
+    @Override
+    public String toString() {
+        return "idJornada='" + idJornada + '\'' +
+                ", fechaJornada=" + fechaJornada;
+    }
 }

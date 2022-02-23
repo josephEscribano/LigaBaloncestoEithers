@@ -22,7 +22,7 @@ public class Querys {
 
     //EQUIPO
     public static final String SELECT_FROM_EQUIPOS = "select * from equipos";
-    public static final String INSER_EQUIPO = "INSERT INTO equipos (idEquipo,nombreEquipo) values (?,?)";
+    public static final String INSERT_EQUIPO = "INSERT INTO equipos (nombreEquipo) values (?)";
     public static final String UPDATE_EQUIPO = "update equipos set nombreEquipo = ? where idEquipo = ?";
     public static final String SELECT_EQUIPO_POR_ID = "select * from equipos where idEquipo = ?";
     public static final String DELETE_EQUIPO = "delete from equipos where idEquipo = ?";
@@ -34,6 +34,7 @@ public class Querys {
     public static final String SELECT_JORNADA_POR_ID = "select * from jornadas where idJornada = ?";
     public static final String DELETE_JORNADA = "delete from jornadas where idJornada = ?";
 
+    //PARTIDOS
     public static final String SELECT_FROM_PARTIDOS = "select idPartido,idJornada,e.idEquipo,e.nombreEquipo,eq.idEquipo,eq.nombreEquipo,resultado from partidos inner join (equipos e,equipos eq) on partidos.idEquipoLocal = e.idEquipo and partidos.idEquipoVisitante = eq.idEquipo";
     public static final String INSERT_PARTIDO = "INSERT INTO partidos (idJornada,idEquipoLocal,idEquipoVisitante,resultado) values (?,?,?,?)";
     public static final String UPDATE_PARTIDO = "update partidos set idJornada = ?, idEquipoLocal = ?, idEquipoVisitante = ?, resultado = ? where idPartido = ?";
@@ -41,5 +42,7 @@ public class Querys {
     public static final String DELETE_PARTIDO = "delete from partidos where idPartido = ?";
     public static final String DELETE_PARTIDO_POR_EQUIPO = "delete from partidos where idEquipoLocal = ? or idEquipoVisitante = ?";
     public static final String DELETE_PARTIDO_POR_JORNADA = "delete from partidos where idJornada = ?";
-    public static final String FILTROS_PARTIDOS = "select idPartido,idJornada,e.idEquipo,e.nombreEquipo,eq.idEquipo,eq.nombreEquipo,resultado from partidos inner join (equipos e,equipos eq) on partidos.idEquipoLocal = e.idEquipo and partidos.idEquipoVisitante = eq.idEquipo where e.nombreEquipo = ? or eq.nombreEquipo = ? or idJornada = ?";
+    public static final String FILTRO_EQUIPO = "select idPartido,idJornada,e.idEquipo,e.nombreEquipo,eq.idEquipo,eq.nombreEquipo,resultado from partidos inner join (equipos e,equipos eq) on partidos.idEquipoLocal = e.idEquipo and partidos.idEquipoVisitante = eq.idEquipo where e.nombreEquipo = ? or eq.nombreEquipo = ? ";
+    public static final String FILTRO_JORNADA = "select idPartido,idJornada,e.idEquipo,e.nombreEquipo,eq.idEquipo,eq.nombreEquipo,resultado from partidos inner join (equipos e,equipos eq) on partidos.idEquipoLocal = e.idEquipo and partidos.idEquipoVisitante = eq.idEquipo where idJornada = ?";
+    public static final String UPDATE_CODIGO = "update usuarios set codActivacion = ?,fechaLimite = ? where userName = ? and confirmacion = ?";
 }

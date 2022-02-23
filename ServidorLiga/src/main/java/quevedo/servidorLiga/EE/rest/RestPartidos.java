@@ -9,6 +9,8 @@ import jakarta.ws.rs.core.Response;
 import lombok.extern.log4j.Log4j2;
 import quevedo.common.errores.ApiError;
 import quevedo.common.modelos.Partido;
+import quevedo.servidorLiga.EE.filtros.anotaciones.Admin;
+import quevedo.servidorLiga.EE.filtros.anotaciones.Login;
 import quevedo.servidorLiga.EE.utils.ConstantesRest;
 import quevedo.servidorLiga.service.PartidosService;
 
@@ -18,6 +20,7 @@ import java.util.List;
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes(MediaType.APPLICATION_JSON)
 @Log4j2
+@Login
 public class RestPartidos {
     private final PartidosService partidosService;
 
@@ -46,10 +49,10 @@ public class RestPartidos {
     }
 
     @GET
-    @Path(ConstantesRest.PATH_FILTRAR)
-    public Response filtrar(@QueryParam(ConstantesRest.PATH_EQUIPO) String equipo, @QueryParam(ConstantesRest.PATH_JORNADA) String jornada){
+    @Path(ConstantesRest.PATH_FILTRAR_EQUIPO)
+    public Response filtrarEquipo(@QueryParam(ConstantesRest.PATH_PARAMETER_EQUIPO) String equipo) {
         Response response;
-        Either<ApiError,List<Partido>> resultado = partidosService.filtrar(equipo, jornada);
+        Either<ApiError, List<Partido>> resultado = partidosService.filtrarEquipo(equipo);
         if (resultado.isRight()) {
             response = Response.status(Response.Status.OK)
                     .entity(resultado.get())
@@ -62,7 +65,27 @@ public class RestPartidos {
 
         return response;
     }
+
+    @GET
+    @Path(ConstantesRest.PATH_FILTRAR_JORNADA)
+    public Response filtrarJornada(@QueryParam(ConstantesRest.PATH_PARAMETER_JORNADA) String jornada) {
+        Response response;
+        Either<ApiError, List<Partido>> resultado = partidosService.filtrarJornada(jornada);
+        if (resultado.isRight()) {
+            response = Response.status(Response.Status.OK)
+                    .entity(resultado.get())
+                    .build();
+        } else {
+            response = Response.status(Response.Status.NOT_FOUND)
+                    .entity(resultado.getLeft())
+                    .build();
+        }
+
+        return response;
+    }
+
     @POST
+    @Admin
     public Response savePartido(Partido partido) {
         Response response;
         Either<ApiError, Partido> resultado = partidosService.savePartido(partido);
@@ -80,6 +103,7 @@ public class RestPartidos {
     }
 
     @PUT
+    @Admin
     public Response updatePartido(Partido partido) {
         Response response;
         Either<ApiError, Partido> resultado = partidosService.updatePartido(partido);
@@ -98,9 +122,10 @@ public class RestPartidos {
 
     @DELETE
     @Path(ConstantesRest.PATH_ID)
-    public Response deleteJornada(@PathParam(ConstantesRest.PARAM_ID) String id) {
+    @Admin
+    public Response deletePartido(@PathParam(ConstantesRest.PARAM_ID) String id) {
         Response response;
-        Either<String, String> resultado = partidosService.deletePartido(id);
+        Either<ApiError, String> resultado = partidosService.deletePartido(id);
         if (resultado.isRight()) {
             response = Response.status(Response.Status.OK)
                     .entity(resultado.get())

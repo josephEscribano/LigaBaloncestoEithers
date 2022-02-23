@@ -21,7 +21,7 @@ public class Configuration {
     private String userMail;
     private String passwordMail;
 
-    void cargarConfig(InputStream file){
+    void cargarConfig(InputStream file) {
 
         try {
             Yaml yaml = new Yaml();
@@ -29,7 +29,7 @@ public class Configuration {
 
             it = yaml.loadAll(file);
 
-            Map<String,String> m = (Map) it.iterator().next();
+            Map<String, String> m = (Map) it.iterator().next();
 
             this.ruta = m.get(ConstantesConfig.RUTA);
             this.password = m.get(ConstantesConfig.PASSWORD);
@@ -40,8 +40,8 @@ public class Configuration {
             this.passwordMail = m.get(ConstantesConfig.PASSWORD_MAIL);
 
 
-        }catch (Exception e){
-            log.error(e.getMessage(),e);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
         }
     }
 }

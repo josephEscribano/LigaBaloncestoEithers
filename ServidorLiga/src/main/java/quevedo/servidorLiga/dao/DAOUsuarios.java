@@ -10,8 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import quevedo.common.errores.ApiError;
-import quevedo.common.modelos.Partido;
-import quevedo.common.modelos.UsuarioDTO;
+import quevedo.common.modelos.UsuarioUpdateDTO;
 import quevedo.servidorLiga.dao.conexionDB.DBConnectionPool;
 import quevedo.servidorLiga.dao.modelos.Usuario;
 import quevedo.servidorLiga.dao.utils.ConstantesDao;
@@ -20,7 +19,6 @@ import quevedo.servidorLiga.utils.CreateHash;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -45,7 +43,7 @@ public class DAOUsuarios {
             resultado = Either.right(jdbcTemplate.query(Querys.SELECT_FROM_USUARIOS, BeanPropertyRowMapper.newInstance(Usuario.class)));
         } catch (CannotGetJdbcConnectionException e) {
             log.error(e.getMessage(), e);
-            resultado = Either.left(new ApiError(ConstantesDao.ERROR_CONEXION, LocalDate.now()));
+            resultado = Either.left(new ApiError(ConstantesDao.ERROR_CONEXION));
         }
         return resultado;
     }
@@ -62,22 +60,42 @@ public class DAOUsuarios {
                 String pass = jdbcTemplate.queryForObject(Querys.SELECT_PASS, String.class, username);
                 if (createHash.verificarPass(passCliente, pass)) {
                     Usuario usuario = jdbcTemplate.queryForObject(Querys.SELECT_LOGIN, BeanPropertyRowMapper.newInstance(Usuario.class), username, pass);
-                    resultado = Either.right(usuario);
+                    if (usuario.isConfirmacion()) {
+                        resultado = Either.right(usuario);
+                    } else {
+                        resultado = Either.left(new ApiError(ConstantesDao.AVISO_CORREO_SIN_CONFIRMAR));
+                    }
+
                 } else {
-                    resultado = Either.left(new ApiError(ConstantesDao.MENSAJE_ERROR_DATOS, LocalDate.now()));
+                    resultado = Either.left(new ApiError(ConstantesDao.MENSAJE_ERROR_DATOS));
                 }
             } else {
-                resultado = Either.left(new ApiError(ConstantesDao.MENSAJE_ERROR_DATOS, LocalDate.now()));
+                resultado = Either.left(new ApiError(ConstantesDao.MENSAJE_ERROR_DATOS));
             }
 
 
         } catch (CannotGetJdbcConnectionException e) {
             log.error(e.getMessage(), e);
-            resultado = Either.left(new ApiError(ConstantesDao.ERROR_CONEXION, LocalDate.now()));
+            resultado = Either.left(new ApiError(ConstantesDao.ERROR_CONEXION));
         }
 
         return resultado;
     }
+
+    public Either<ApiError, Integer> reenviarCorreo(String user, String codigo, LocalDateTime fecha) {
+        Either<ApiError, Integer> resultado;
+        try {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dbConnectionPool.getHikariDataSource());
+            resultado = Either.right(jdbcTemplate.update(Querys.UPDATE_CODIGO, codigo, fecha, user, 0));
+        } catch (CannotGetJdbcConnectionException e) {
+            log.error(e.getMessage(), e);
+            resultado = Either.left(new ApiError(ConstantesDao.ERROR_CONEXION));
+        }
+
+        return resultado;
+    }
+
+    //REGISTRO
 
     public Either<ApiError, Usuario> saveUsuario(Usuario usuario) {
         Either<ApiError, Usuario> resultado;
@@ -105,7 +123,7 @@ public class DAOUsuarios {
             resultado = Either.right(usuario);
         } catch (CannotGetJdbcConnectionException e) {
             log.error(e.getMessage(), e);
-            resultado = Either.left(new ApiError(ConstantesDao.ERROR_CONEXION, LocalDate.now()));
+            resultado = Either.left(new ApiError(ConstantesDao.ERROR_CONEXION));
         }
 
 
@@ -199,22 +217,23 @@ public class DAOUsuarios {
         return resultado;
     }
 
-    public Either<ApiError, Usuario> updateUsuario(UsuarioDTO usuarioDTO) {
+
+    public Either<ApiError, Usuario> updateUsuario(UsuarioUpdateDTO usuarioUpdateDTO) {
 
         Either<ApiError, Usuario> resultado;
         try {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(dbConnectionPool.getHikariDataSource());
-            int actualizado = jdbcTemplate.update(Querys.UPDATE_USUARIOS, usuarioDTO.getUserName(), usuarioDTO.getCorreo(), usuarioDTO.getIdUsuario());
+            int actualizado = jdbcTemplate.update(Querys.UPDATE_USUARIOS, usuarioUpdateDTO.getUserName(), usuarioUpdateDTO.getCorreo(), usuarioUpdateDTO.getIdUsuario());
 
             if (actualizado > 0) {
-                Usuario usuario = jdbcTemplate.queryForObject(Querys.SELECT_USUARIO_POR_ID, BeanPropertyRowMapper.newInstance(Usuario.class), usuarioDTO.getIdUsuario());
+                Usuario usuario = jdbcTemplate.queryForObject(Querys.SELECT_USUARIO_POR_ID, BeanPropertyRowMapper.newInstance(Usuario.class), usuarioUpdateDTO.getIdUsuario());
                 resultado = Either.right(usuario);
             } else {
-                resultado = Either.left(new ApiError(ConstantesDao.USUARIO_NO_ENCONTRADO, LocalDate.now()));
+                resultado = Either.left(new ApiError(ConstantesDao.USUARIO_NO_ENCONTRADO));
             }
         } catch (CannotGetJdbcConnectionException e) {
             log.error(e.getMessage(), e);
-            resultado = Either.left(new ApiError(ConstantesDao.ERROR_CONEXION, LocalDate.now()));
+            resultado = Either.left(new ApiError(ConstantesDao.ERROR_CONEXION));
         }
 
 
@@ -222,9 +241,9 @@ public class DAOUsuarios {
 
     }
 
-    public Either<String, String> deleteUsuario(String id) {
+    public Either<ApiError, String> deleteUsuario(String id) {
 
-        Either<String, String> resultado;
+        Either<ApiError, String> resultado;
         try {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(dbConnectionPool.getHikariDataSource());
             int actualizado = jdbcTemplate.update(Querys.DELETE_USUARIO, id);
@@ -232,17 +251,18 @@ public class DAOUsuarios {
             if (actualizado > 0) {
                 resultado = Either.right(id);
             } else {
-                resultado = Either.left(ConstantesDao.USUARIO_NO_ELIMINADO);
+                resultado = Either.left(new ApiError(ConstantesDao.USUARIO_NO_ELIMINADO));
             }
         } catch (CannotGetJdbcConnectionException e) {
             log.error(e.getMessage(), e);
-            resultado = Either.left(ConstantesDao.ERROR_CONEXION);
+            resultado = Either.left(new ApiError(ConstantesDao.ERROR_CONEXION));
         }
 
 
         return resultado;
     }
 
+    //CAMBIAR CONTRASEÑA
     public Either<ApiError, Usuario> insertCodCambio(Usuario usuario) {
         Either<ApiError, Usuario> resultado;
 
@@ -254,25 +274,25 @@ public class DAOUsuarios {
                 resultado = Either.right(usuario);
 
             } else {
-                resultado = Either.left(new ApiError(ConstantesDao.USUARIO_NO_ENCONTRADO, LocalDate.now()));
+                resultado = Either.left(new ApiError(ConstantesDao.USUARIO_NO_ENCONTRADO));
             }
         } catch (CannotGetJdbcConnectionException e) {
             log.error(e.getMessage(), e);
-            resultado = Either.left(new ApiError(ConstantesDao.ERROR_CONEXION, LocalDate.now()));
+            resultado = Either.left(new ApiError(ConstantesDao.ERROR_CONEXION));
         }
 
         return resultado;
     }
 
-    public Either<String, Integer> changePass(String pass, String codigo) {
-        Either<String, Integer> resultado;
+    public Either<ApiError, Integer> changePass(String pass, String codigo) {
+        Either<ApiError, Integer> resultado;
         try {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(dbConnectionPool.getHikariDataSource());
             resultado = Either.right(jdbcTemplate.update(Querys.UPDATE_PASS, pass, codigo));
 
         } catch (CannotGetJdbcConnectionException e) {
             log.error(e.getMessage(), e);
-            resultado = Either.left(ConstantesDao.ERROR_CONEXION);
+            resultado = Either.left(new ApiError(ConstantesDao.ERROR_CONEXION));
         }
 
         return resultado;
@@ -293,8 +313,6 @@ public class DAOUsuarios {
 
         return confirmacion;
     }
-
-
 
 
 }
